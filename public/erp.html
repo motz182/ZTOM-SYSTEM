@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTOM ERP - Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="erp-page">
+    <!-- Header -->
+    <header class="erp-header">
+        <div class="container">
+            <div class="erp-nav">
+                <div class="logo">
+                    <h1>ZTOM ERP</h1>
+                </div>
+                <nav class="erp-menu">
+                    <a href="/" class="btn-secondary">Voltar ao Site</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="erp-main">
+        <div class="container">
+            <h2 class="page-title">Calculadora de Esquadrias de Alumínio</h2>
+            
+            <!-- Calculator Form -->
+            <div class="card">
+                <h3>Novo Cálculo</h3>
+                <form id="calculatorForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientName">Nome do Cliente:</label>
+                            <input type="text" id="clientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectName">Nome do Projeto:</label>
+                            <input type="text" id="projectName" required>
+                        </div>
+                    </div>
+
+                    <h4>Perfis de Alumínio</h4>
+                    <div id="profilesContainer">
+                        <div class="profile-item">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Tipo de Perfil:</label>
+                                    <select class="profileType">
+                                        <option value="janela">Janela</option>
+                                        <option value="porta">Porta</option>
+                                        <option value="esquadria">Esquadria</option>
+                                        <option value="veneziana">Veneziana</option>
+                                        <option value="box">Box</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Comprimento (m):</label>
+                                    <input type="number" step="0.01" class="profileLength" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantidade:</label>
+                                    <input type="number" class="profileQuantity" value="1" min="1" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Largura (m) - Opcional:</label>
+                                    <input type="number" step="0.01" class="profileWidth">
+                                </div>
+                                <div class="form-group">
+                                    <label>Altura (m) - Opcional:</label>
+                                    <input type="number" step="0.01" class="profileHeight">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cor:</label>
+                                    <select class="profileColor">
+                                        <option value="branco">Branco</option>
+                                        <option value="preto">Preto</option>
+                                        <option value="bronze">Bronze</option>
+                                        <option value="anodizado">Anodizado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="addProfile" class="btn btn-secondary">+ Adicionar Perfil</button>
+                        <button type="submit" class="btn btn-primary">Calcular</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="card" style="display: none;">
+                <h3>Resultados do Cálculo</h3>
+                <div id="resultsContent"></div>
+            </div>
+
+            <!-- Projects List -->
+            <div class="card">
+                <h3>Projetos Recentes</h3>
+                <div id="projectsList"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/erp.js"></script>
+</body>
+</html>
