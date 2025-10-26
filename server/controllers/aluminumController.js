@@ -1,6 +1,9 @@
 const AluminumProject = require('../models/AluminumProject');
 const { optimizeCutting, calculateCosts } = require('../utils/cuttingOptimizer');
 
+// Constants
+const DEFAULT_BAR_LENGTH = 6.0; // Comprimento padrão da barra de alumínio em metros
+
 // Armazenamento em memória para quando o MongoDB não estiver disponível
 let inMemoryProjects = [];
 let nextId = 1;
@@ -41,7 +44,8 @@ exports.createProject = async (req, res) => {
         // Tenta salvar no MongoDB, senão usa memória
         let project;
         try {
-            if (AluminumProject.db && AluminumProject.db.readyState === 1) {
+            const mongoose = require('mongoose');
+            if (mongoose.connection.readyState === 1) {
                 project = new AluminumProject(projectData);
                 await project.save();
             } else {
@@ -78,7 +82,8 @@ exports.getAllProjects = async (req, res) => {
         let projects;
         
         try {
-            if (AluminumProject.db && AluminumProject.db.readyState === 1) {
+            const mongoose = require('mongoose');
+            if (mongoose.connection.readyState === 1) {
                 projects = await AluminumProject.find().sort({ createdAt: -1 });
             } else {
                 throw new Error('MongoDB não disponível');
@@ -110,7 +115,8 @@ exports.getProjectById = async (req, res) => {
         let project;
         
         try {
-            if (AluminumProject.db && AluminumProject.db.readyState === 1) {
+            const mongoose = require('mongoose');
+            if (mongoose.connection.readyState === 1) {
                 project = await AluminumProject.findById(id);
             } else {
                 throw new Error('MongoDB não disponível');
@@ -154,12 +160,12 @@ exports.calculateOptimization = (req, res) => {
         }
         
         const { totalArea, totalLength, estimatedCost, cuts } = calculateCosts(profiles);
-        const cuttingPlan = optimizeCutting(cuts, barLength || 6.0);
+        const cuttingPlan = optimizeCutting(cuts, barLength || DEFAULT_BAR_LENGTH);
         
         // Calcula estatísticas
         const totalBars = cuttingPlan.length;
         const totalWaste = cuttingPlan.reduce((sum, bar) => sum + bar.waste, 0);
-        const wastePercentage = (totalWaste / (totalBars * (barLength || 6.0))) * 100;
+        const wastePercentage = (totalWaste / (totalBars * (barLength || DEFAULT_BAR_LENGTH))) * 100;
         
         res.status(200).json({
             success: true,

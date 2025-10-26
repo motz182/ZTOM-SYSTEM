@@ -40,4 +40,4 @@ const AluminumProjectSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.models.AluminumProject || mongoose.model('AluminumProject', AluminumProjectSchema);
+module.exports = mongoose.model('AluminumProject', AluminumProjectSchema);
