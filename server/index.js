@@ -3,10 +3,28 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Rate limiting configuration
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // limite de 100 requisições por janela
+    message: 'Muitas requisições deste IP, tente novamente mais tarde.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+const strictApiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 20, // limite de 20 requisições por janela para operações pesadas
+    message: 'Muitas requisições deste IP, tente novamente mais tarde.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // Middleware
 app.use(cors());
@@ -27,15 +45,24 @@ if (process.env.MONGODB_URI) {
 
 // Routes
 const aluminumRoutes = require('./routes/aluminum');
-app.use('/api/aluminum', aluminumRoutes);
+app.use('/api/aluminum', apiLimiter, aluminumRoutes);
+
+// Rate limiter for static pages
+const pageLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minuto
+    max: 30, // limite de 30 requisições por minuto
+    message: 'Muitas requisições, tente novamente mais tarde.',
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // Serve landing page
-app.get('/', (req, res) => {
+app.get('/', pageLimiter, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Serve ERP dashboard
-app.get('/erp', (req, res) => {
+app.get('/erp', pageLimiter, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/erp.html'));
 });
 
